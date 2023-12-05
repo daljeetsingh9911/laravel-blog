@@ -18,7 +18,7 @@ class CategorySeeder extends Seeder
         $categorie =  collect(json_decode($json, true));
 
         $categorie->each(function ($cat) {
-            Category::created([
+            Category::create([
                 'name' => $cat['name'],
                 'slug' => $cat['slug'],
                 'description' => $cat['description']
