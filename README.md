@@ -1,66 +1,108 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Relationship
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# one to Many
 
-## About Laravel
+one user can have multiple Articles 
+```
+  $table->foreignId('user_id')
+                    ->constrained('users')
+                    ->cascadeOnDelete();  // if user will be deleted all the articles related to user_id will be deleted
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+one category can have multiple Articles
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+```
+$table->foreignId('category_id')
+                  ->constrained('categories')
+                  ->cascadeOnDelete(); // if category deleted all the articles related to category will be deleted
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+# Many to Many Relationship
 
-## Learning Laravel
+IN THE TAGS CASE one tag have multiple articles and one article can have multiple Tag
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+"To resolve this issue we will use pivot table "
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+What is pivot table [click her](https://medium.com/@miladev95/laravel-pivot-table-15c69d517a83) to learn more
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+so in over case create a migrate to create a ”Pivot table”
 
-## Laravel Sponsors
+php artisan make:migration ”create_article_tag_table”  
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Must use this naming convention for the ”Pivot Table”  Create_{table1}_{table2}_table
 
-### Premium Partners
+```
+Each migration should have in order wise otherwise you will get into an error
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+for example
 
-## Contributing
+we have foreignKey in article on Categories and tags
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+so Categories and tags table must be migrate first before article Table
 
-## Code of Conduct
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Setting Up Relationship in Model
 
-## Security Vulnerabilities
+in the case of Articles 
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+A Single Article is blongs to tags ,categories and users
 
-## License
+so we have made Relationship between these in Article Model
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+”The name of the Method  is depends on the Relationship type as following”
+
+.
+├── Artical.php
+├── Category.php
+├── Tag.php
+└── User.php
+
+```
+Artical.php
+
+//....Code 
+  public function user():BelongsTo{  // a single Article blongs single user 
+      return $this->belongsTo(User::class,'user_id');
+  }
+
+  public function category(): BelongsTo{ // A single Artical is belongsTo Single Category
+      return $this->belongsTo(Category::class,'category_id');
+  }
+
+  public function tags():BelongsToMany{ // A Single Artical can have multiple tags and tags and A single tag can have multiple Articles links to it.
+      return $this->belongsToMany(Tag::class);
+
+  }
+//----Rest Code
+
+```
+
+
+
+```
+Category.php
+
+//--- rest code 
+
+
+public function articles():HasMany {  // A Single Categories can have multiple articles allocated
+  return $this->hasMany(Article::class);
+}
+//--- rest code 
+
+
+```
+
+```
+Tag.php
+
+//--- rest code 
+public function articles():BelongsToMany{ // A single Tag blongs to many Articles
+    return $this->belongsToMany(Article::class); 
+}
+//--- rest code 
+
+
+```
