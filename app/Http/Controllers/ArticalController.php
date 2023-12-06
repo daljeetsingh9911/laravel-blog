@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 
 class ArticalController extends Controller
@@ -104,8 +105,10 @@ class ArticalController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Article $artical)
+    public function destroy(Article $article):RedirectResponse
     {
-        //
+        $article->delete();
+
+        return redirect(route('dashboard'))->with('message','Article has been deleted successfully');
     }
 }

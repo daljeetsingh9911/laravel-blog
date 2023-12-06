@@ -17,26 +17,42 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900 dark:text-gray-100">
-                        <a href="{{ route('articles.edit',$article->slug) }}" class="text-orange-400 rounded-md py-3 px-5 inline-flex float-right">
-                            Update Article
-                       </a>
+                    <div class="p-6 text-gray-900 dark:text-gray-100 flex justify-between">
+                       
+                        <div>
+                            <a href="{{ route('articles.show', $article->slug) }}">
+                                <h2 class="hover:text-red-700 sm:w-3/5 transition-all text-white sm:pt-0 pt-10 text-3xl sm:text-4xl font-bold sm:pb-2 w-full sm:pt-10 block">
+                                    {{ $article->name }}
+                                </h2>
+                            </a>
+    
+                            
+                            <p class="text-gray-400 leading-8 py-6 text-lg w-full sm:w-3/5">
+                                {{ $article->excerpt }}
+                            </p>
+                        </div>
             
-                        <a href="{{ route('articles.show', $article->slug) }}">
-                            <h2 class="hover:text-red-700 sm:w-3/5 transition-all text-white sm:pt-0 pt-10 text-3xl sm:text-4xl font-bold sm:pb-2 w-full sm:pt-10 block">
-                                {{ $article->name }}
-                            </h2>
-                        </a>
-            
-                        <p class="text-gray-400 leading-8 py-6 text-lg w-full sm:w-3/5">
-                            {{ $article->excerpt }}
-                        </p>
+                        <div class="flex gap-4 items-start justify-between">
+                            <button class="bg-transparent">
+                                <a href="{{ route('articles.edit',$article->slug) }}" class="text-orange-400 rounded-md">
+                                    Update
+                               </a>
+                            </button>
+    
+                           <form action="{{ route('articles.destroy', $article->slug) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button class="bg-transparent text-red-500">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         @empty
-            <h2 class="hover:text-red-700 sm:w-3/5 transition-all text-white sm:pt-0 pt-10 text-3xl sm:text-4xl font-bold sm:pb-2 w-full block">
+            <h2 class="hover:text-red-700 sm:w-3/5 transition-all text-white sm:pt-0 pt-10 text-3xl sm:text-4xl font-bold sm:pb-2 w-full block text-center m-auto mt-8">
                 You do not have any Article yet
             </h2>
     @endforelse
