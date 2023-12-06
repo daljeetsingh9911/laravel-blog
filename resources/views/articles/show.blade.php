@@ -3,7 +3,7 @@
 @section('content')
     <div class="py-40 space-y-2 xl:space-y-0 w-4/5 sm:w-2/5 mx-auto">
         <h2 class="text-gray-100 pb-4 text-3xl sm:text-5xl font-bold">
-            {{ $article->title }}
+            {{ $article->name }}
         </h2>
 
         <span class="py-8 text-white text-sm">

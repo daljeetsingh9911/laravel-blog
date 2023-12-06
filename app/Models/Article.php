@@ -16,7 +16,7 @@ class Article extends Model
     }
     
     protected $fillable = [
-        'title','name','description','excerpt','user_id','category_id'
+        'name','slug','description','excerpt','user_id','category_id'
     ];
 
     public function user():BelongsTo{

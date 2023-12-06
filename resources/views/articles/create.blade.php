@@ -13,7 +13,7 @@
                         @csrf
 
                         <div>
-                            <x-input-label for="status" class="pb-2" :value="__('Status')" />
+                            <x-input-label for="status" name="status" class="pb-2" :value="__('Status')" />
 
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" name="status" class="sr-only peer">
@@ -22,9 +22,9 @@
                         </div>
 
                         <div>
-                            <x-input-label for="title" :value="__('Title')" />
-                            <x-text-input id="title" name="title" type="text" class="mt-1 block w-full" autocomplete="title" />
-                            @error('title')
+                            <x-input-label for="title" :value="__('name')" />
+                            <x-text-input id="title" name="name" type="text" class="mt-1 block w-full" autocomplete="name" />
+                            @error('name')
                             <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </div>

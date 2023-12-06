@@ -1,8 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Here are your articles ')}}
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight flex justify-between">
+            <span>
+                {{ __('Here are your articles ')}}
+            </span>
+            <span class="block inline text-xs text-white transition-all hover:text-gray-100 font-bold pr-2 uppercase">
+                <a href="{{ route('articles.create') }}" class="bg-red-700 rounded-md py-1 px-3">
+                    Create Article
+                </a>
+            </span>
         </h2>
+        
     </x-slot>
 
     @forelse ($articles as $article) 
