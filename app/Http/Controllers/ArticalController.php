@@ -8,10 +8,19 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Str;
 
 class ArticalController extends Controller
 {
+    use AuthorizesRequests;
+
+
+    public function __construct(){
+        $this->authorizeResource(Article::class,'article');
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -82,14 +91,14 @@ class ArticalController extends Controller
      */
     public function update(UpdateArticleRequest $request, Article $article)
     {
-        
+
        $article->update($request->validated()+[
         'slug' => Str::slug($request->name)
        ]);
 
        $article->tags()->sync($request->tags);
 
-       return redirect(route('article'))->with('message','Article is successfully updated');
+       return redirect(route('articles.index'))->with('message','Article is successfully updated');
     }
 
     /**
