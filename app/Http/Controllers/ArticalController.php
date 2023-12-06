@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Artical;
+use App\Models\Article;
 use Illuminate\Http\Request;
 
 class ArticalController extends Controller
@@ -12,7 +12,10 @@ class ArticalController extends Controller
      */
     public function index()
     {
-        //
+        $articles = Article::with(['user','tags'])->latest()->paginate();
+ 
+        return view("articles.index",compact("articles"));
+        
     }
 
     /**
@@ -34,15 +37,16 @@ class ArticalController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Artical $artical)
+    public function show(Article $article)
     {
-        //
+        
+        return view("articles.show", compact("article"));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Artical $artical)
+    public function edit(Article $artical)
     {
         //
     }
@@ -50,7 +54,7 @@ class ArticalController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Artical $artical)
+    public function update(Request $request, Article $artical)
     {
         //
     }
@@ -58,7 +62,7 @@ class ArticalController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Artical $artical)
+    public function destroy(Article $artical)
     {
         //
     }

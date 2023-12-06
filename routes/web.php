@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ArticalController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Article;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,13 +21,20 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $articles = Article::where('user_id', '=', auth()->user()->id)->latest()->paginate();
+    return view('dashboard',compact('articles'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+Route::resource('/articles', ArticalController::class)->only(['index','show']);
+
+
 Route::middleware('auth')->group(function () {
+    Route::resource('/dashboard/articles', ArticalController::class)->except(['index','show']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
 
 require __DIR__.'/auth.php';
