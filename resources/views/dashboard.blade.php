@@ -18,10 +18,9 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900 dark:text-gray-100">
-                        <span class="sm:float-right float-left sm:pt-20 text-gray-400">
-                            {{ $article->created_at->format("M jS Y") }}
-                            , by {{ $article->user->name }}
-                        </span>
+                        <a href="{{ route('articles.edit',$article->slug) }}" class="text-orange-400 rounded-md py-3 px-5 inline-flex float-right">
+                            Update Article
+                       </a>
             
                         <a href="{{ route('articles.show', $article->slug) }}">
                             <h2 class="hover:text-red-700 sm:w-3/5 transition-all text-white sm:pt-0 pt-10 text-3xl sm:text-4xl font-bold sm:pb-2 w-full sm:pt-10 block">
@@ -32,14 +31,6 @@
                         <p class="text-gray-400 leading-8 py-6 text-lg w-full sm:w-3/5">
                             {{ $article->excerpt }}
                         </p>
-            
-                        @foreach($article->tags as $tag)
-                            <span class="block inline text-xs text-white transition-all hover:text-gray-100 font-bold pr-2 uppercase">
-                                <a href="/" class="bg-red-700 rounded-md py-1 px-3">
-                                    {{ $tag->name }}
-                                </a>
-                            </span>
-                        @endforeach
                     </div>
                 </div>
             </div>

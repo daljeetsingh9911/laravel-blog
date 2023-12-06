@@ -24,9 +24,9 @@
                         </div>
 
                         <div>
-                            <x-input-label for="title" :value="__('Title')" />
-                            <x-text-input value="{{ $article->title }}" id="title" name="title" type="text" class="mt-1 block w-full" autocomplete="title" />
-                            @error('title')
+                            <x-input-label for="name" :value="__('Name')" />
+                            <x-text-input value="{{ $article->name }}" id="name" name="name" type="text" class="mt-1 block w-full" autocomplete="name" />
+                            @error('name')
                             <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </div>

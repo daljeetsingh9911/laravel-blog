@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreArticleRequest;
+use App\Http\Requests\UpdateArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ArticalController extends Controller
@@ -69,17 +69,27 @@ class ArticalController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Article $artical)
+    public function edit(Article $article):View
     {
-        //
+        $categories = Category::pluck('name','id');
+        $tags = Tag::pluck('name','id');
+
+        return view("articles.edit", compact( 'tags', 'categories','article'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Article $artical)
+    public function update(UpdateArticleRequest $request, Article $article)
     {
-        //
+        
+       $article->update($request->validated()+[
+        'slug' => Str::slug($request->name)
+       ]);
+
+       $article->tags()->sync($request->tags);
+
+       return redirect(route('article'))->with('message','Article is successfully updated');
     }
 
     /**
