@@ -52,12 +52,14 @@ so we have made Relationship between these in Article Model
 
 
 ”The name of the Method  is depends on the Relationship type as following”
-
+<pre>
+  Models
 .
 ├── Artical.php
 ├── Category.php
 ├── Tag.php
 └── User.php
+</pre>
 
 ```
 Artical.php
@@ -106,3 +108,121 @@ public function articles():BelongsToMany{ // A single Tag blongs to many Article
 
 
 ```
+
+## Mitigations, seeding and  Factories 
+so everything comes under the database folder
+
+we have
+
+<pre>
+├── data
+│   └── categories.json    // we load all the cartegories from here 
+├── factories       // Factories will help us to create fake content inside database tables
+│   ├── ArticleFactory.php
+│   ├── TagFactory.php
+│   └── UserFactory.php
+├── migrations        // Migrations will hold all the table structure or table details                                                 
+│   ├── 2014_10_12_000000_create_users_table.php
+│   ├── 2014_10_12_100000_create_password_reset_tokens_table.php
+│   ├── 2019_08_19_000000_create_failed_jobs_table.php
+│   ├── 2019_12_14_000001_create_personal_access_tokens_table.php
+│   ├── 2023_12_05_092950_create_tags_table.php
+│   ├── 2023_12_05_101123_create_categories_table.php
+│   ├── 2023_12_05_101125_create_articles_table.php
+│   └── 2023_12_05_101126_create_article_tag_table.php
+└── seeders     // help us to seed the fake insertions of data
+    ├── CategorySeeder.php
+    └── DatabaseSeeder.php
+
+</pre>
+
+
+Commands:
+```
+php artisan migrate // to create table inside database
+
+for migration the order of migrations will always matters
+
+//All Seeders
+php artisan db:seed
+//One Seeder
+php artisan db:seed --class=NameSeeder
+
+```
+if you run  `php artisan db:seed`
+
+the main class for seeding is DatabaseSeeder.php
+
+
+```
+
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     */
+    public function run(): void
+    {
+        $this->call(CategorySeeder::class); // calling category seeder
+        User::factory()->count(10)->create(); // creating 10 user 
+        Article::factory() 
+                ->has(Tag::factory()->count(2))  // beacuse we have pivot table relationshio ManytoMany
+                ->count(50)
+                ->create();
+    }
+}
+
+```
+
+## Creating Request  handler
+
+```
+php artisan make:request NAME_OF_REQUEST_CLASS
+```
+the request class we can handle validations
+
+For Example
+
+```
+class StoreArticleRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array 
+    { 
+        return [
+            'name' => ['required','string','max:255','unique:articles'],
+            'excerpt' => ['required','string'],
+            'description' => ['required','string'],
+            'category_id' => ['required','exists:categories,id'],
+            'tags' => ['nullable','array'],
+            'tags.*' => ['integer',Rule::exists('tags','id')],
+        ];
+    }
+}
+
+```
+'unique:articles' will check form database it the name and slug is unique as we set in migration 
+
+'exists:categories,id' will check if the category id is exists in the categories table
+<pre> 
+
+{ 
+'tags' => ['nullable','array'], will check is the tag are request input should be array of nullable
+'tags.*' => ['integer',Rule::exists('tags','id')], // there it
+}
+'tags.*' means [tagID1,tagID2,tagID3] for each tagID
+
+['integer',Rule::exists('tags','id')] value should be integer and it should exist inside tags table
+</pre>
